@@ -35,10 +35,13 @@ class HomeError extends HomeState {
   List<Object?> get props => [message, position];
 }
 
-class FakeGpsDetected extends HomeState {
-  final String message;
-  const FakeGpsDetected({required this.message});
+class PresenceInState extends HomeState {
+  final Position position;
+  final UserModel? userModel;
+  final CameraPosition? cameraPosition;
+  const PresenceInState(
+      {required this.position, this.userModel, this.cameraPosition});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [position];
 }

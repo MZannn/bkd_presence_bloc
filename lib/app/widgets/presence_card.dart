@@ -12,12 +12,14 @@ class PresencesCard extends StatelessWidget {
     required this.presencesDate,
     this.entryStatus,
     this.attendanceClock,
+    this.attendanceClockOut,
   });
 
   final TextTheme textTheme;
   final String? attendanceClock;
   final String presencesDate;
   final String? entryStatus;
+  final String? attendanceClockOut;
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +96,7 @@ class PresencesCard extends StatelessWidget {
                     textTheme: textTheme,
                   ),
                   PresenceLabelClock(
-                    attendanceClock: attendanceClock,
+                    attendanceClock: attendanceClockOut,
                     textTheme: textTheme,
                   )
                 ],

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bkd_presence_bloc/app/constants/haversine_formula.dart';
 import 'package:bkd_presence_bloc/app/constants/time_formatting.dart';
 import 'package:bkd_presence_bloc/app/models/user_model.dart';
 import 'package:bkd_presence_bloc/app/repositories/geolocation_repository.dart';
@@ -22,6 +23,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   StreamSubscription? _geolocationSubscription;
   late UserModel userModel;
   late DateTime now;
+  late Position position;
 
   HomeBloc({required GeolocationRepository geolocationRepository})
       : _geolocationRepository = geolocationRepository,
@@ -31,7 +33,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(HomeLoading());
 
       try {
-        final Position position = event.position;
+        position = event.position;
         Map<String, dynamic> response = await apiService.get(
           endpoint: 'user',
           requireToken: true,
@@ -48,7 +50,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final attendanceClock = DateFormat('HH:mm:ss').format(now);
         _geolocationSubscription =
             Geolocator.getPositionStream().listen((event) async {
-          double distance = Geolocator.distanceBetween(
+          position = event;
+          double distance = haversineFormula(
             event.latitude,
             event.longitude,
             userModel.data.user.office.latitude,
@@ -80,15 +83,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 'attendance_entry_status': entryStatus,
               },
             );
-
             userModel = UserModel.fromJson(response);
-            emit(
-              HomeLoaded(
-                userModel: userModel,
+            add(
+              PresenceIn(
                 position: position,
                 cameraPosition: CameraPosition(
                   target: LatLng(event.latitude, event.longitude),
-                  zoom: 16,
                 ),
               ),
             );
@@ -100,7 +100,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(HomeError(message: e.toString(), position: event.position));
       }
     });
-
+    on<PresenceIn>((event, emit) {
+      emit(PresenceInState(
+        position: event.position,
+        userModel: userModel,
+        cameraPosition: event.cameraPosition,
+      ));
+    });
     on<LoadGeolocation>((event, emit) {
       _geolocationSubscription?.cancel();
       _geolocationSubscription = _geolocationRepository
@@ -108,6 +114,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           .asStream()
           .listen((Position position) => add(GetAllData(position: position)));
     });
+
+    on<PresenceOutChecker>((event, emit) {});
   }
 
   Stream<HomeState> mapEventToState(HomeEvent event) async* {

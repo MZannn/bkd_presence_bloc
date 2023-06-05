@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:bkd_presence_bloc/app/blocs/home/home_bloc.dart';
+import 'package:bkd_presence_bloc/app/constants/time_formatting.dart';
 import 'package:bkd_presence_bloc/app/models/user_model.dart';
 import 'package:bkd_presence_bloc/app/pages/home_page.dart';
 import 'package:bkd_presence_bloc/app/pages/profile_page.dart';
 import 'package:bkd_presence_bloc/app/themes/text_themes.dart';
+import 'package:bkd_presence_bloc/app/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 import '../blocs/navigation/navigation_bloc.dart';
 import '../constants/color_constants.dart';
@@ -124,8 +129,26 @@ class NavigationPage extends StatelessWidget {
           return const SizedBox();
         },
       ),
-      floatingActionButton: BlocBuilder(
+      floatingActionButton: BlocConsumer(
         bloc: homeBloc,
+        listener: (context, state) {
+          if (state is HomeLoaded) {
+            if (state.position.isMocked == true) {
+              SnackBar snackBar = CustomSnackBar(
+                content: const Text("Anda Terdeteksi Menggunakan FakeGPS"),
+                backgroundColor: ColorConstants.redColor,
+              );
+              bool isMockedFirst = true;
+              if (isMockedFirst) {
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                isMockedFirst = false;
+              }
+              Timer.periodic(const Duration(seconds: 5), (timer) {
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              });
+            }
+          }
+        },
         builder: (context, state) {
           if (state is HomeLoaded) {
             final UserModel userModel = state.userModel!;
@@ -135,9 +158,7 @@ class NavigationPage extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),
-              onPressed: () {
-                // context.read<HomeBloc>().add(PresenceOut(id: id, latitude: latitude, longitude: longitude, address: address, note: note));
-              },
+              onPressed: () {},
               backgroundColor: presence?.attendanceEntryStatus != null &&
                       presence?.attendanceExitStatus == null
                   ? ColorConstants.mainColor
