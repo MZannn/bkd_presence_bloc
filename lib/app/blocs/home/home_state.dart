@@ -16,10 +16,12 @@ class HomeLoaded extends HomeState {
   final UserModel? userModel;
   final Position position;
   final CameraPosition? cameraPosition;
+  final DateTime? dateTime;
   const HomeLoaded({
     this.userModel,
     required this.position,
     this.cameraPosition,
+    this.dateTime,
   });
 
   @override
@@ -35,13 +37,10 @@ class HomeError extends HomeState {
   List<Object?> get props => [message, position];
 }
 
-class PresenceInState extends HomeState {
-  final Position position;
-  final UserModel? userModel;
-  final CameraPosition? cameraPosition;
-  const PresenceInState(
-      {required this.position, this.userModel, this.cameraPosition});
+class PresenceError extends HomeState {
+  final String message;
+  const PresenceError({required this.message});
 
   @override
-  List<Object?> get props => [position];
+  List<Object?> get props => [message];
 }

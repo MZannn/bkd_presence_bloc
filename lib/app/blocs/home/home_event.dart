@@ -19,15 +19,4 @@ class PresenceOutChecker extends HomeEvent {}
 
 class PresenceOut extends HomeEvent {}
 
-class PresenceIn extends HomeEvent {
-  final Position position;
-  final CameraPosition? cameraPosition;
-  const PresenceIn({
-    required this.position,
-    this.cameraPosition,
-  });
-  @override
-  List<Object?> get props => [position];
-}
-
 class LoadGeolocation extends HomeEvent {}

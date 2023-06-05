@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bkd_presence_bloc/app/blocs/home/home_bloc.dart';
-import 'package:bkd_presence_bloc/app/constants/time_formatting.dart';
 import 'package:bkd_presence_bloc/app/models/user_model.dart';
 import 'package:bkd_presence_bloc/app/pages/home_page.dart';
 import 'package:bkd_presence_bloc/app/pages/profile_page.dart';
@@ -153,18 +152,54 @@ class NavigationPage extends StatelessWidget {
           if (state is HomeLoaded) {
             final UserModel userModel = state.userModel!;
             final presence = userModel.data.presences?.first;
+            String today = DateFormat('yyyy-MM-dd').format(state.dateTime!);
+            DateTime endWork =
+                DateTime.parse("$today ${userModel.data.user.office.endWork}");
             return FloatingActionButton(
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),
-              onPressed: () {},
+              onPressed: () {
+                if (state.position.isMocked == true) {
+                  SnackBar snackBar = CustomSnackBar(
+                    content: const Text("Anda Terdeteksi Menggunakan FakeGPS"),
+                    backgroundColor: ColorConstants.redColor,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                } else if (presence?.attendanceEntryStatus == null) {
+                  SnackBar snackBar = CustomSnackBar(
+                    content: const Text("Anda Belum Melakukan Presensi Masuk"),
+                    backgroundColor: ColorConstants.redColor,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                } else if (presence?.attendanceExitStatus != null) {
+                  SnackBar snackBar = CustomSnackBar(
+                    content: const Text("Anda Sudah Melakukan Presensi Keluar"),
+                    backgroundColor: ColorConstants.redColor,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                } else if (state.dateTime!.isBefore(endWork)) {
+                  SnackBar snackBar = CustomSnackBar(
+                    content: const Text(
+                        "Anda Belum Bisa Melakukan Presensi Keluar, Silahkan Tunggu Hingga Waktu Pulang"),
+                    backgroundColor: ColorConstants.redColor,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                } else if (presence?.attendanceEntryStatus != null &&
+                    presence?.attendanceExitStatus == null &&
+                    state.dateTime!.isAfter(endWork) &&
+                    state.position.isMocked == false) {
+                  homeBloc.add(PresenceOut());
+                }
+              },
               backgroundColor: presence?.attendanceEntryStatus != null &&
-                      presence?.attendanceExitStatus == null
+                      presence?.attendanceExitStatus == null &&
+                      state.dateTime!.isAfter(endWork)
                   ? ColorConstants.mainColor
                   : ColorConstants.greyColor,
               child: SvgPicture.asset(
-                "assets/icons/${presence?.attendanceEntryStatus != null && presence?.attendanceExitStatus == null ? 'presence.svg' : 'presence_disabled.svg'}",
+                "assets/icons/${presence?.attendanceEntryStatus != null && presence?.attendanceExitStatus == null && state.dateTime!.isAfter(endWork) ? 'presence.svg' : 'presence_disabled.svg'}",
               ),
             );
           }

@@ -51,6 +51,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         _geolocationSubscription =
             Geolocator.getPositionStream().listen((event) async {
           position = event;
+          print("fake gps ? ${position.isMocked}");
           double distance = haversineFormula(
             event.latitude,
             event.longitude,
@@ -84,29 +85,29 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               },
             );
             userModel = UserModel.fromJson(response);
-            add(
-              PresenceIn(
+            add(GetAllData(position: event));
+            emit(
+              HomeLoaded(
+                userModel: userModel,
                 position: position,
-                cameraPosition: CameraPosition(
-                  target: LatLng(event.latitude, event.longitude),
-                ),
+                dateTime: now,
               ),
             );
           }
         });
 
-        emit(HomeLoaded(userModel: userModel, position: position));
+        emit(
+          HomeLoaded(
+            userModel: userModel,
+            position: position,
+            dateTime: now,
+          ),
+        );
       } catch (e) {
         emit(HomeError(message: e.toString(), position: event.position));
       }
     });
-    on<PresenceIn>((event, emit) {
-      emit(PresenceInState(
-        position: event.position,
-        userModel: userModel,
-        cameraPosition: event.cameraPosition,
-      ));
-    });
+
     on<LoadGeolocation>((event, emit) {
       _geolocationSubscription?.cancel();
       _geolocationSubscription = _geolocationRepository
@@ -115,7 +116,41 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           .listen((Position position) => add(GetAllData(position: position)));
     });
 
-    on<PresenceOutChecker>((event, emit) {});
+    on<PresenceOut>((event, emit) async {
+      double distance = haversineFormula(
+        position.latitude,
+        position.longitude,
+        userModel.data.user.office.latitude,
+        userModel.data.user.office.longitude,
+      );
+      if (position.isMocked == false &&
+          distance <= userModel.data.user.office.radius) {
+        Map<String, dynamic> response = await apiService.put(
+          endpoint: 'presence-out/${userModel.data.presences?.first.id}',
+          body: {
+            'attendance_clock_out': DateFormat('HH:mm:ss').format(now),
+            'exit_position': "${position.latitude}, ${position.longitude}",
+            'exit_distance': distance * 1000, // convert to meter
+            'attendance_exit_status': 'HADIR',
+          },
+          requireToken: true,
+        );
+        userModel = UserModel.fromJson(response);
+        add(
+          GetAllData(
+            position: position,
+          ),
+        );
+      } else if (position.isMocked) {
+        emit(
+          HomeLoaded(
+            position: position,
+            userModel: userModel,
+            dateTime: now,
+          ),
+        );
+      }
+    });
   }
 
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
