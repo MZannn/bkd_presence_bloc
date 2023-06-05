@@ -51,7 +51,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         _geolocationSubscription =
             Geolocator.getPositionStream().listen((event) async {
           position = event;
-          print("fake gps ? ${position.isMocked}");
           double distance = haversineFormula(
             event.latitude,
             event.longitude,
