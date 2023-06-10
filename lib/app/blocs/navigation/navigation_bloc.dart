@@ -8,12 +8,6 @@ part 'navigation_state.dart';
 
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   NavigationBloc() : super(NavigationInitial()) {
-    Future.delayed(
-      Duration.zero,
-      () {
-        add(const NavigationChanged(selectedIndex: 0));
-      },
-    );
     on<NavigationChanged>(
       (event, emit) {
         emit(NavigationLoaded(selectedIndex: event.selectedIndex));

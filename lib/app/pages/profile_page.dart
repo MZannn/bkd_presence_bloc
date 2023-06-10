@@ -1,4 +1,5 @@
 import 'package:bkd_presence_bloc/app/constants/initial_name.dart';
+import 'package:bkd_presence_bloc/app/routes/routes.dart';
 import 'package:bkd_presence_bloc/app/services/api_constant.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +8,11 @@ import '../models/user_model.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage(
-      {super.key, required this.userModel, required this.textTheme});
+      {super.key,
+      required this.userModel,
+      required this.textTheme,
+      required this.currentTime});
+  final DateTime currentTime;
   final UserModel userModel;
   final TextTheme textTheme;
   @override
@@ -152,39 +157,16 @@ class ProfilePage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // InkWell(
-                      //   onTap: () {
-                      //     Get.toNamed(Routes.permission, arguments: {
-                      //       'nip': user?.data?.user?.nip,
-                      //       'office_id': user?.data?.user?.officeId,
-                      //       'presence_id': user?.data?.presences?.first.id,
-                      //     });
-                      //   },
-                      //   child: Row(
-                      //     children: [
-                      //       const Icon(Icons.coronavirus),
-                      //       const SizedBox(
-                      //         width: 12,
-                      //       ),
-                      //       Text(
-                      //         "Izin atau Sakit",
-                      //         style: textTheme.bodyLarge!.copyWith(
-                      //           color: const Color(0xFF383838),
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      // const SizedBox(
-                      //   height: 16,
-                      // ),
                       InkWell(
                         onTap: () {
-                          // Get.toNamed(Routes.bussinessTrip, arguments: {
-                          //   'nip': user.nip,
-                          //   'office_id': user?.data?.user?.officeId,
-                          //   'presence_id': user?.data?.presences?.first.id,
-                          // });
+                          Navigator.pushNamed(
+                            context,
+                            Routes.businessTrip,
+                            arguments: {
+                              'userModel': userModel,
+                              'currentTime': currentTime,
+                            },
+                          );
                         },
                         child: Row(
                           children: [
@@ -206,11 +188,14 @@ class ProfilePage extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () {
-                          // Get.toNamed(Routes.vacation, arguments: {
-                          //   'nip': user?.nip,
-                          //   'office_id': user?.data?.user?.officeId,
-                          //   'presence_id': user?.data?.presences?.first.id,
-                          // });
+                          Navigator.pushNamed(
+                            context,
+                            Routes.vacation,
+                            arguments: {
+                              'userModel': userModel,
+                              'currentTime': currentTime,
+                            },
+                          );
                         },
                         child: Row(
                           children: [
@@ -232,10 +217,11 @@ class ProfilePage extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () {
-                          // Get.toNamed(Routes.changeDevice, arguments: [
-                          //   user?.data?.user?.nip,
-                          //   user?.data?.user?.officeId,
-                          // ]);
+                          Navigator.pushNamed(
+                            context,
+                            Routes.changeDevice,
+                            arguments: userModel,
+                          );
                         },
                         child: Row(
                           children: [

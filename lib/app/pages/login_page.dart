@@ -1,5 +1,7 @@
 import 'package:bkd_presence_bloc/app/blocs/login/login_bloc.dart';
+import 'package:bkd_presence_bloc/app/routes/routes.dart';
 import 'package:bkd_presence_bloc/app/widgets/custom_form_field.dart';
+import 'package:bkd_presence_bloc/app/widgets/label_button.dart';
 import 'package:flutter/material.dart';
 
 import '../themes/text_themes.dart';
@@ -129,17 +131,20 @@ class LoginPage extends StatelessWidget {
                         }
                       },
                       child: state is LoginLoading
-                          ? const CircularProgressIndicator()
-                          : Text(
-                              "Login",
-                              style: textTheme.labelMedium!
-                                  .copyWith(color: Colors.white),
+                          ? const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: CircularProgressIndicator(),
+                            )
+                          : LabelButton(
+                              label: "Login",
+                              textTheme: textTheme,
                             ),
                     );
                   },
                   listener: (context, state) {
                     if (state is LoginSuccess) {
-                      Navigator.pushReplacementNamed(context, '/navigation');
+                      Navigator.pushReplacementNamed(
+                          context, Routes.navigation);
                     } else if (state is LoginError) {
                       SnackBar snackBar = CustomSnackBar(
                         content: Text(state.message),

@@ -27,7 +27,7 @@ class ShimmerLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     return shape == ShimmerShape.rectangle
         ? Shimmer.fromColors(
-            baseColor: baseColor ?? ColorConstants.grey50,
+            baseColor: baseColor ?? ColorConstants.grey300,
             highlightColor: highlightColor ?? Colors.white,
             child: Container(
               height: height,
@@ -39,7 +39,7 @@ class ShimmerLoading extends StatelessWidget {
             ),
           )
         : Shimmer.fromColors(
-            baseColor: baseColor ?? ColorConstants.grey50,
+            baseColor: baseColor ?? ColorConstants.grey300,
             highlightColor: highlightColor ?? Colors.white,
             child: CircleAvatar(
               backgroundColor: Colors.white,

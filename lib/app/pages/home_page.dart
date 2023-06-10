@@ -4,6 +4,7 @@ import 'package:bkd_presence_bloc/app/constants/initial_name.dart';
 import 'package:bkd_presence_bloc/app/models/user_model.dart';
 import 'package:bkd_presence_bloc/app/pages/home_error_page.dart';
 import 'package:bkd_presence_bloc/app/pages/home_loading_page.dart';
+import 'package:bkd_presence_bloc/app/routes/routes.dart';
 import 'package:bkd_presence_bloc/app/services/api_constant.dart';
 import 'package:bkd_presence_bloc/app/themes/text_themes.dart';
 import 'package:bkd_presence_bloc/app/widgets/presence_card.dart';
@@ -55,7 +56,7 @@ class HomePage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Badan Kepegawaian Daerah",
+                                user.office.name,
                                 style: textTheme.titleMedium,
                               ),
                               const SizedBox(
@@ -203,7 +204,12 @@ class HomePage extends StatelessWidget {
                                 height: 20,
                               ),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                      context, Routes.detailPresence,
+                                      arguments:
+                                          userModel.data.presences?.first);
+                                },
                                 child: PresencesCard(
                                   attendanceClock:
                                       presences.first.attendanceClock,
@@ -228,7 +234,12 @@ class HomePage extends StatelessWidget {
                                     ),
                                   ),
                                   TextButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        Routes.presenceHistory,
+                                      );
+                                    },
                                     child: const Text("Lebih banyak"),
                                   ),
                                 ],
@@ -243,7 +254,12 @@ class HomePage extends StatelessWidget {
                                           userModel.data.presences?.length,
                                       itemBuilder: (context, index) {
                                         return GestureDetector(
-                                          onTap: () {},
+                                          onTap: () {
+                                            Navigator.pushNamed(
+                                                context, Routes.detailPresence,
+                                                arguments: userModel
+                                                    .data.presences?[index]);
+                                          },
                                           child: Container(
                                             margin: const EdgeInsets.only(
                                                 bottom: 16),
@@ -251,6 +267,9 @@ class HomePage extends StatelessWidget {
                                               textTheme: textTheme,
                                               attendanceClock: presences[index]
                                                   .attendanceClock,
+                                              attendanceClockOut:
+                                                  presences[index]
+                                                      .attendanceClockOut,
                                               entryStatus: presences[index]
                                                   .attendanceEntryStatus,
                                               presencesDate: formatDate(

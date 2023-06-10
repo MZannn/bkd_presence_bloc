@@ -1,3 +1,4 @@
+import 'package:bkd_presence_bloc/app/routes/routes.dart';
 import 'package:flutter/material.dart';
 import '../blocs/splash/splash_bloc.dart';
 
@@ -11,10 +12,10 @@ class SplashPage extends StatelessWidget {
       body: BlocListener<SplashBloc, SplashState>(
         listener: (context, state) {
           if (state is NavigateToLoginPage) {
-            Navigator.pushReplacementNamed(context, '/login');
+            Navigator.pushReplacementNamed(context, Routes.login);
           }
           if (state is NavigateToHomePage) {
-            Navigator.pushReplacementNamed(context, '/navigation');
+            Navigator.pushReplacementNamed(context, Routes.navigation);
           }
         },
         child: Container(

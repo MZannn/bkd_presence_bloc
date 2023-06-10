@@ -31,12 +31,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         emit(LoginError(message: e.toString()));
       }
     });
-    Future.delayed(
-      Duration.zero,
-      () {
-        add(GetDeviceId());
-      },
-    );
+
     on<GetDeviceId>((event, emit) async {
       final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
       if (Platform.isAndroid) {

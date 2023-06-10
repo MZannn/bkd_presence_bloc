@@ -37,7 +37,9 @@ class NavigationPage extends StatelessWidget {
                     if (state is HomeLoaded) {
                       final UserModel userModel = state.userModel!;
                       return ProfilePage(
-                          userModel: userModel, textTheme: textTheme);
+                          userModel: userModel,
+                          textTheme: textTheme,
+                          currentTime: state.dateTime!);
                     }
                     return const SizedBox();
                   },

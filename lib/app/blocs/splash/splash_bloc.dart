@@ -13,6 +13,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       (event, emit) async {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         String? token = prefs.getString('token');
+        print(token);
         emit(SplashLoading());
         await Future.delayed(
           const Duration(seconds: 2),
