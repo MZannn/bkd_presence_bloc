@@ -43,6 +43,7 @@ class BusinessTripBloc extends Bloc<BusinessTripEvent, BusinessTripState> {
     on<PickFile>((event, emit) async {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowedExtensions: ['pdf', 'jpg', 'png', 'jpeg'],
+        type: FileType.custom,
       );
       if (result != null) {
         File file = File(result.files.single.path!);

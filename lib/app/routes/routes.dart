@@ -1,5 +1,6 @@
 import 'package:bkd_presence_bloc/app/blocs/business_trip/business_trip_bloc.dart';
 import 'package:bkd_presence_bloc/app/blocs/change_device/change_device_bloc.dart';
+import 'package:bkd_presence_bloc/app/blocs/edit_profile/edit_profile_bloc.dart';
 import 'package:bkd_presence_bloc/app/blocs/home/home_bloc.dart';
 import 'package:bkd_presence_bloc/app/blocs/login/login_bloc.dart';
 import 'package:bkd_presence_bloc/app/blocs/navigation/navigation_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:bkd_presence_bloc/app/blocs/vacation/vacation_bloc.dart';
 import 'package:bkd_presence_bloc/app/pages/business_trip_page.dart';
 import 'package:bkd_presence_bloc/app/pages/change_device_page.dart';
 import 'package:bkd_presence_bloc/app/pages/detail_presence_page.dart';
+import 'package:bkd_presence_bloc/app/pages/edit_profile_page.dart';
 import 'package:bkd_presence_bloc/app/pages/home_page.dart';
 import 'package:bkd_presence_bloc/app/pages/login_page.dart';
 import 'package:bkd_presence_bloc/app/pages/navigation_page.dart';
@@ -27,6 +29,7 @@ class Routes {
   static const String vacation = '/vacation';
   static const String navigation = '/navigation';
   static const String changeDevice = '/change-device';
+  static const String editProfile = '/edit-profile';
   Route route(RouteSettings settings) {
     switch (settings.name) {
       case '/':
@@ -97,6 +100,16 @@ class Routes {
           builder: (context) => BlocProvider(
             create: (context) => ChangeDeviceBloc(),
             child: const ChangeDevicePage(),
+          ),
+        );
+      case editProfile:
+        return MaterialPageRoute(
+          settings: RouteSettings(
+            arguments: settings.arguments,
+          ),
+          builder: (context) => BlocProvider(
+            create: (context) => EditProfileBloc(),
+            child: const EditProfilePage(),
           ),
         );
       case navigation:

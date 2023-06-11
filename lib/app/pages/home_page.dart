@@ -95,7 +95,7 @@ class HomePage extends StatelessWidget {
                                                 ),
                                               )
                                             : Image.network(
-                                                '${ApiConstants.apiUrl}/storage/${user.profilePhotoPath!}',
+                                                '${ApiConstants.baseUrl}/storage/${user.profilePhotoPath!}',
                                                 fit: BoxFit.cover,
                                               ),
                                       ),

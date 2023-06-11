@@ -82,7 +82,7 @@ class ProfilePage extends StatelessWidget {
                                           ),
                                         )
                                       : Image.network(
-                                          "${ApiConstants.apiUrl}/storage/${user.profilePhotoPath}",
+                                          "${ApiConstants.baseUrl}/storage/${user.profilePhotoPath}",
                                           fit: BoxFit.cover,
                                         ),
                                 ),
@@ -91,13 +91,11 @@ class ProfilePage extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              // Get.toNamed(Routes.editProfile, arguments: {
-                              //   'name': user?.data?.user?.name,
-                              //   'position': user?.data?.user?.position,
-                              //   'phoneNumber': user?.data?.user?.phoneNumber,
-                              //   'profilePhotoPath':
-                              //       user?.data?.user?.profilePhotoPath,
-                              // });
+                              Navigator.pushNamed(
+                                context,
+                                Routes.editProfile,
+                                arguments: userModel,
+                              );
                             },
                             child: Container(
                               height: 40,
